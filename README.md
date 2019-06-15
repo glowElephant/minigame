@@ -6,6 +6,8 @@
 
 환형 링크드 리스트를 활용하여 구현
 
+![Alt Text](./resources/minigamecombat.gif)
+
 ### 노드 데이터 구조
 <pre><code>
 public class RPSNode
