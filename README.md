@@ -91,42 +91,42 @@ public class RPSNodeList
 
 ### 
 <pre><code>
-    /// <summary>
-    /// 공이 쪼게질때마다 업데이트되야하는 부분들
-    /// </summary>
-	public void SplitCircle()
+/// <summary>
+/// 공이 쪼게질때마다 업데이트되야하는 부분들
+/// </summary>
+public void SplitCircle()
+{
+	Level++;
+	if (Level < GameDefine.kFeverLevel)
 	{
-		Level++;
-		if (Level < GameDefine.kFeverLevel)
+		//공2개로 분열
+		for (int i = 0; i < 2; i++)
 		{
-			//공2개로 분열
-			for (int i = 0; i < 2; i++)
+			GameObject obj = Instantiate(this.gameObject, this.transform.parent);
+
+			//레벨크기 횟수만큼 작아지는 사이즈를 곱해준다
+			float sizeDivPer = GameDefine.kInitSize;
+			float SizeOfGravity = GameDefine.kGravity;
+			for (int j = 0; j < Level; j++)
 			{
-				GameObject obj = Instantiate(this.gameObject, this.transform.parent);
-
-				//레벨크기 횟수만큼 작아지는 사이즈를 곱해준다
-				float sizeDivPer = GameDefine.kInitSize;
-				float SizeOfGravity = GameDefine.kGravity;
-				for (int j = 0; j < Level; j++)
-				{
-					sizeDivPer *= GameDefine.kDivSize;
-					SizeOfGravity *= GameDefine.kIncGravity;
-				}
-
-				Vector3 scale = new Vector3(sizeDivPer, sizeDivPer, 1);
-				obj.GetComponent<CircleCollider2D>().radius = GameDefine.kColliderSize[Level];
-				//콜라이더 크기 조절 추가
-				obj.GetComponent<Transform>().localScale = scale;
-
-				var body2d = obj.GetComponent<Rigidbody2D>();
-				body2d.gravityScale = SizeOfGravity;
-				int divForce = GameDefine.kFeverDivForce;
-				if (i == 1)
-					divForce = -divForce;
-				body2d.AddForce(new Vector2(divForce, GameDefine.kFeverDivForce), ForceMode2D.Force);
+				sizeDivPer *= GameDefine.kDivSize;
+				SizeOfGravity *= GameDefine.kIncGravity;
 			}
+
+			Vector3 scale = new Vector3(sizeDivPer, sizeDivPer, 1);
+			obj.GetComponent<CircleCollider2D>().radius = GameDefine.kColliderSize[Level];
+			//콜라이더 크기 조절 추가
+			obj.GetComponent<Transform>().localScale = scale;
+
+			var body2d = obj.GetComponent<Rigidbody2D>();
+			body2d.gravityScale = SizeOfGravity;
+			int divForce = GameDefine.kFeverDivForce;
+			if (i == 1)
+				divForce = -divForce;
+			body2d.AddForce(new Vector2(divForce, GameDefine.kFeverDivForce), ForceMode2D.Force);
 		}
 	}
+}
 </code></pre>
 
 ## 3. 인앱결제 대한 에러처리
@@ -138,54 +138,54 @@ public class RPSNodeList
 ### 처리부분
 
 <pre><code>
- /// <summary>
-        /// https://docs.unity3d.com/ScriptReference/Purchasing.PurchaseFailureReason.html
-        /// 유니티 IAPManager 구매 에러 원인들
-        /// </summary>
-        /// <param name="ex"></param>
-        public void HandlePurchaseError(PurchaseException ex)
+/// <summary>
+/// https://docs.unity3d.com/ScriptReference/Purchasing.PurchaseFailureReason.html
+/// 유니티 IAPManager 구매 에러 원인들
+/// </summary>
+/// <param name="ex"></param>
+public void HandlePurchaseError(PurchaseException ex)
+{
+	switch (ex.FailReason)
+	{
+	case PurchaseFailureReason.DuplicateTransaction:
 		{
-			switch (ex.FailReason)
-			{
-			case PurchaseFailureReason.DuplicateTransaction:
-				{
-					// 스토어 결재 완료. 서버 처리 안됨.
-					ConfirmPendingPurchase(ex.PurchasedProduct);
-					DlgMessageBox.Show("ERR_PLEASE_REPORT");
-				}
-				break;
-
-			case PurchaseFailureReason.SignatureInvalid:
-				// 구매 영수증의 서명 확인 실패
-				DlgMessageBox.Show("ERR_SIGNATURE_INVALID");
-				break;
-
-			case PurchaseFailureReason.UserCancelled:
-				// 사용자 구매 취소
-				DlgMessageBox.Show("ERR_USER_CANCLLED");
-				break;
-
-			case PurchaseFailureReason.PaymentDeclined:
-				// 사용자가 지불하는데에 문제가 있음
-				DlgMessageBox.Show("ERROR_IAP_INIT");
-				break;
-
-			case PurchaseFailureReason.ExistingPurchasePending:
-				// 이미 구매가 진행중인 상태
-				DlgMessageBox.Show("ERR_EXISTING_PURCHASE_PENDING");
-				break;
-
-			default:
-				DlgMessageBox.Show("ERR_PLEASE_REPORT");
-				break;
-			}
-
-			//실패시 서버로 리포트는 무조건 해야할것같다....(관리차원) 유저가 취소했을때 빼고!
-			if (ex.FailReason != PurchaseFailureReason.UserCancelled)
-			{
-				LogEvent.ReportException("IAPManager", ex);
-			}
+			// 스토어 결재 완료. 서버 처리 안됨.
+			ConfirmPendingPurchase(ex.PurchasedProduct);
+			DlgMessageBox.Show("ERR_PLEASE_REPORT");
 		}
+		break;
+
+	case PurchaseFailureReason.SignatureInvalid:
+		// 구매 영수증의 서명 확인 실패
+		DlgMessageBox.Show("ERR_SIGNATURE_INVALID");
+		break;
+
+	case PurchaseFailureReason.UserCancelled:
+		// 사용자 구매 취소
+		DlgMessageBox.Show("ERR_USER_CANCLLED");
+		break;
+
+	case PurchaseFailureReason.PaymentDeclined:
+		// 사용자가 지불하는데에 문제가 있음
+		DlgMessageBox.Show("ERROR_IAP_INIT");
+		break;
+
+	case PurchaseFailureReason.ExistingPurchasePending:
+		// 이미 구매가 진행중인 상태
+		DlgMessageBox.Show("ERR_EXISTING_PURCHASE_PENDING");
+		break;
+
+	default:
+		DlgMessageBox.Show("ERR_PLEASE_REPORT");
+		break;
+	}
+
+	//실패시 서버로 리포트는 무조건 해야할것같다....(관리차원) 유저가 취소했을때 빼고!
+	if (ex.FailReason != PurchaseFailureReason.UserCancelled)
+	{
+		LogEvent.ReportException("IAPManager", ex);
+	}
+}
 </code></pre>
 
 ## 4. 행성연구 컨텐츠 개발
@@ -198,44 +198,44 @@ public class RPSNodeList
 ### 프로토콜 (해당 컨텍스트 저장 요청)
 <pre><code>
 #region ReqSaveLaboratory
-	public static IPromise<ReqSaveLaboratoryResponse> ReqSaveLaboratory(PlanetResearchContext context)
-	{
-		var json = JsonConvert.SerializeObject(context, Formatting.Indented);	//PlanetResearchContext를 시리얼라이즈
-		
-		var pf = Profiler.Start("ReqSaveLaboratory");
-		Promise<ReqSaveLaboratoryResponse> promise = new Promise<ReqSaveLaboratoryResponse>();
-		new LogEventRequest()
-			.SetEventKey("ReqSaveLaboratory")
-			.SetEventAttribute("Args", new GSRequestData()
-			.AddNumber("LaboratoryTid", context.TID)
-			.AddJSONStringAsObject("Data", json))
-			.SetMaxResponseTimeInMillis(kMaxResponseTime)
-			.Send(response =>
-			{
-				pf.StopAndReport();
-				if (response.HasErrors)
-				{
-					promise.Reject(new GameSparkException(response.Errors));
-				}
-				else
-				{
-					promise.Resolve(new ReqSaveLaboratoryResponse(response));
-				}
-			});
-
-		return promise;
-	}
-
-	public class ReqSaveLaboratoryResponse // : CurrencyResponse
-	{
-		public int? Version { get; private set; }
-
-		public ReqSaveLaboratoryResponse(LogEventResponse response) //: base(response)
+public static IPromise<ReqSaveLaboratoryResponse> ReqSaveLaboratory(PlanetResearchContext context)
+{
+	var json = JsonConvert.SerializeObject(context, Formatting.Indented);	//PlanetResearchContext를 시리얼라이즈
+	
+	var pf = Profiler.Start("ReqSaveLaboratory");
+	Promise<ReqSaveLaboratoryResponse> promise = new Promise<ReqSaveLaboratoryResponse>();
+	new LogEventRequest()
+		.SetEventKey("ReqSaveLaboratory")
+		.SetEventAttribute("Args", new GSRequestData()
+		.AddNumber("LaboratoryTid", context.TID)
+		.AddJSONStringAsObject("Data", json))
+		.SetMaxResponseTimeInMillis(kMaxResponseTime)
+		.Send(response =>
 		{
-			var result = response.ScriptData.GetGSData("Result");	// 데이터 사용전 디시리얼라이즈 해야함
-			Version = result.GetInt("Version");
-		}
+			pf.StopAndReport();
+			if (response.HasErrors)
+			{
+				promise.Reject(new GameSparkException(response.Errors));
+			}
+			else
+			{
+				promise.Resolve(new ReqSaveLaboratoryResponse(response));
+			}
+		});
+
+	return promise;
+}
+
+public class ReqSaveLaboratoryResponse // : CurrencyResponse
+{
+	public int? Version { get; private set; }
+
+	public ReqSaveLaboratoryResponse(LogEventResponse response) //: base(response)
+	{
+		var result = response.ScriptData.GetGSData("Result");	// 데이터 사용전 디시리얼라이즈 해야함
+		Version = result.GetInt("Version");
 	}
+}
 
 #endregion ReqSaveLaboratory
 </code></pre>
