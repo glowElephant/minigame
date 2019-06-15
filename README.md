@@ -83,8 +83,51 @@ public class RPSNodeList
 
 ## 2. 미니게임 - 피버
 
-
 ![Alt Text](./resources/fever.gif)
+
+### 설명
+
+터치시 공이 분열하며 분열될때마다 공에대한 중력 속도... 등의 값이 바뀐다
+
+### 
+<pre><code>
+    /// <summary>
+    /// 공이 쪼게질때마다 업데이트되야하는 부분들
+    /// </summary>
+	public void SplitCircle()
+	{
+		Level++;
+		if (Level < GameDefine.kFeverLevel)
+		{
+			//공2개로 분열
+			for (int i = 0; i < 2; i++)
+			{
+				GameObject obj = Instantiate(this.gameObject, this.transform.parent);
+
+				//레벨크기 횟수만큼 작아지는 사이즈를 곱해준다
+				float sizeDivPer = GameDefine.kInitSize;
+				float SizeOfGravity = GameDefine.kGravity;
+				for (int j = 0; j < Level; j++)
+				{
+					sizeDivPer *= GameDefine.kDivSize;
+					SizeOfGravity *= GameDefine.kIncGravity;
+				}
+
+				Vector3 scale = new Vector3(sizeDivPer, sizeDivPer, 1);
+				obj.GetComponent<CircleCollider2D>().radius = GameDefine.kColliderSize[Level];
+				//콜라이더 크기 조절 추가
+				obj.GetComponent<Transform>().localScale = scale;
+
+				var body2d = obj.GetComponent<Rigidbody2D>();
+				body2d.gravityScale = SizeOfGravity;
+				int divForce = GameDefine.kFeverDivForce;
+				if (i == 1)
+					divForce = -divForce;
+				body2d.AddForce(new Vector2(divForce, GameDefine.kFeverDivForce), ForceMode2D.Force);
+			}
+		}
+	}
+</code></pre>
 
 ## 3. 인앱결제 대한 에러처리
 
