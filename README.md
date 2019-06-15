@@ -61,7 +61,12 @@ public class RPSNodeList
 		RPSList.Add(PaperNode);
 		RPSList.Add(ScissorNode);
 	}
-
+	
+	/// <summary>
+	/// elem을 통해 몇번째에 해당 elem이 있는지 확인
+	/// </summary>
+	/// <param name="elem">가위 바위 보</param>
+	/// <returns>해당 인덱스</returns>
 	public int? SearchingEqualIndex(RPSGame elem)
 	{
 		for (int i = 0; i < RPSList.Count; i++)
@@ -76,4 +81,5 @@ public class RPSNodeList
 }
 </code></pre>
 
+## 2. 미니게임 가위바위보
 
