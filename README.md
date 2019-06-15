@@ -2,11 +2,11 @@
 ---------------------------------------
 ## 1. 미니게임 가위바위보
 
+![Alt Text](./resources/minigamecombat.gif)
+
 ### 설명
 
 환형 링크드 리스트를 활용하여 구현
-
-![Alt Text](./resources/minigamecombat.gif)
 
 ### 노드 데이터 구조
 <pre><code>
