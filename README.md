@@ -1,6 +1,6 @@
 # portfolio
 ---------------------------------------
-## 1. 미니게임 가위바위보
+## 1. 미니게임 - 가위바위보
 
 ![Alt Text](./resources/minigamecombat.gif)
 
@@ -81,7 +81,11 @@ public class RPSNodeList
 }
 </code></pre>
 
-## 2. 인앱결제 대한 에러처리
+## 2. 미니게임 - 피버
+
+![Alt Text](./resources/fever.gif)
+
+## 3. 인앱결제 대한 에러처리
 
 ### 설명
 
@@ -140,19 +144,20 @@ public class RPSNodeList
 		}
 </code></pre>
 
-## 3. 행성연구 컨텐츠 개발
+## 4. 행성연구 컨텐츠 개발
 
 ### 설명
 
 행성 연구 컨텐츠라는 게임 컨텐츠를 개발하였다 다른 컨텐츠와는 다르게
 해당 컨텐츠는 서버와의 통신에서 json 형태의 string을 주고 받았다
 
-### 프로토콜
+### 프로토콜 (해당 컨텍스트 저장 요청)
 <pre><code>
 #region ReqSaveLaboratory
 	public static IPromise<ReqSaveLaboratoryResponse> ReqSaveLaboratory(PlanetResearchContext context)
 	{
-		var json = JsonConvert.SerializeObject(context, Formatting.Indented);
+		var json = JsonConvert.SerializeObject(context, Formatting.Indented);	//PlanetResearchContext를 시리얼라이즈
+		
 		var pf = Profiler.Start("ReqSaveLaboratory");
 		Promise<ReqSaveLaboratoryResponse> promise = new Promise<ReqSaveLaboratoryResponse>();
 		new LogEventRequest()
@@ -183,10 +188,10 @@ public class RPSNodeList
 
 		public ReqSaveLaboratoryResponse(LogEventResponse response) //: base(response)
 		{
-			var result = response.ScriptData.GetGSData("Result");
+			var result = response.ScriptData.GetGSData("Result");	// 데이터 사용전 디시리얼라이즈 해야함
 			Version = result.GetInt("Version");
 		}
 	}
 
-	#endregion ReqSaveLaboratory
+#endregion ReqSaveLaboratory
 </code></pre>
