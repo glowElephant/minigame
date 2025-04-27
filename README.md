@@ -1,5 +1,3 @@
-# portfolio
----------------------------------------
 ## 1. 미니게임 - 가위바위보
 
 ![Alt Text](./resources/minigamecombat.gif)
